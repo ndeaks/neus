@@ -1,0 +1,96 @@
+---
+  - name: Install Jenkins rpm
+    include: "plays/install_rpm.yml"
+    vars:
+      rpm_app_name: Jenkins
+      rpm_filename: "{{ jenkins_rpm }}"
+
+  - name: Install Plugins
+    include: install_plugins.yml
+
+  - name: Create Jenkins users
+    copy:
+      src=users
+      dest="{{jenkins_home}}"
+      owner="{{jenkins_user}}"
+      group="{{jenkins_group}}"
+
+  - name: Copy Jenkins configuration files
+    copy:
+      src="{{ item }}"
+      dest="{{jenkins_home}}"
+      owner="{{jenkins_user}}"
+      group="{{jenkins_group}}"
+    with_fileglob:
+      - config/*.xml
+
+  - name: Copy Jenkins configuration file
+    template: 
+      src=jenkins_config.xml.j2
+      dest="{{jenkins_home}}/config.xml"
+      owner="{{jenkins_user}}"
+      group="{{jenkins_group}}"
+    when: pamm == "no"
+
+  - name: Copy Jenkins credentials file
+    template:
+      src=credentials.xml.j2
+      dest="{{jenkins_home}}/credentials.xml"
+      owner="{{jenkins_user}}"
+      group="{{jenkins_group}}"
+
+  - name: Set up Jenkins to Sonar configuration
+    template: 
+      src=hudson.plugins.sonar.SonarPublisher.xml.j2
+      dest="{{jenkins_home}}/hudson.plugins.sonar.SonarPublisher.xml"
+      owner="{{jenkins_user}}"
+      group="{{jenkins_group}}"
+
+  - name: Copying Jenkins smoke test build job to the host
+    copy:
+      src=smoke_test.zip
+      dest=/tmp
+
+  - name: Unzipping Jenkins smoke test build job
+    unarchive:
+      src=/tmp/smoke_test.zip
+      dest="{{jenkins_home}}"
+      owner="{{jenkins_user}}"
+      group="{{jenkins_group}}"
+      copy=no
+
+  - name: Removing Jenkins smoke test job zip file from the host
+    file: path=/tmp/smoke_test.zip state=absent
+
+  - name: Configure Smoke Test Build
+    template:
+      src=smoke_test_config.xml.j2
+      dest="{{jenkins_home}}/jobs/smoke_test/config.xml"
+      owner="{{jenkins_user}}"
+      group="{{jenkins_group}}"
+
+  - name: Install PAMM seed build pipeline
+    include: install_pamm_build.yml
+    when: pamm == "yes" and blueprint != "silicon"
+
+  - name: Jenkins service setup
+    template:
+      src=jenkins.j2
+      dest=/etc/sysconfig/jenkins
+      owner=root
+      mode=600
+    when: blueprint != "silicon"
+
+  - name: Starting the Jenkins Service
+    service:
+      name=jenkins
+      state=started
+      enabled=yes
+    when: blueprint != "silicon"
+
+  - name: Copy entrypoint script for Jenkins Master Docker container
+    template:
+      src=entrypoint.sh.j2
+      dest=/entrypoint.sh
+      mode=0755
+    when: blueprint == "silicon"

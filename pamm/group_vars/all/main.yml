@@ -1,0 +1,8 @@
+---
+  unzip_rpm : unzip-6.0-15.el7.x86_64.rpm
+  mariadb_user: maria
+  mariadb_password: Passw0rd!
+
+  # Variables are set by the localhost when the target platform is provisioned
+  become: "{{hostvars['localhost']['become']}}"
+  connection: "{{hostvars['localhost']['connection']}}"

@@ -1,0 +1,35 @@
+---
+### Install Jenkins
+  - name: Check Jenkins installed
+    stat: path="{{jenkins_home}}"
+    register: jenkins_exists
+
+  - include: install_jenkins.yml
+    become: "{{become}}"
+    when: jenkins_exists.stat.exists == false
+
+### Setup Jenkins to remote connectivity
+  - name: Fetch Jenkins public key and save in temporary folder
+    fetch:
+      src="{{jenkins_user_home}}/.ssh/id_rsa.pub"
+      dest=cache/authorized_keys
+      flat=yes
+    when: blueprint != "silicon"
+
+  - name: Jenkins publish over ssh settings
+    template:
+      src=jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml.j2
+      dest="{{jenkins_home}}/jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml"
+      owner="{{jenkins_user}}"
+      group="{{jenkins_group}}"
+    when: blueprint != "silicon"
+
+  - name: Change Jenkins folder permissions
+    file:
+      name="{{item.folder}}"
+      recurse="yes"
+      mode="0777"
+    with_items:
+      - { folder: '{{jenkins_user_home}}'}
+      - { folder: 'var/log/jenkins'}
+    when: blueprint == "silicon"

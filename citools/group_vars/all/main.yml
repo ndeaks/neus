@@ -1,0 +1,25 @@
+---
+  # JDK variables
+  java_sdk_name: "Java JDK 8u92-x64"
+  java_sdk_rpm: jdk-8u92-linux-x64.rpm
+
+  npm_rpm: npm-1.3.6-5.el7.noarch.rpm
+
+  # SBT variables
+  sbt_folder: sbt-0.13.11
+  sbt_zip: sbt-0.13.11.zip
+
+  # Database variables
+  db_user      : admin
+  db_pwd       : Passw0rd!
+
+  # Variables are set by the localhost when the target platform is provisioned
+  become: "{{hostvars['localhost']['become']}}"
+  connection: "{{hostvars['localhost']['connection']}}"
+
+  # IP Addresses for the CI Tools
+  database_ip_address: "{{hostvars['localhost']['database_ip_address']}}"
+  gogs_ip_address: "{{hostvars['localhost']['gogs_ip_address']}}"
+  nexus_ip_address: "{{hostvars['localhost']['nexus_ip_address']}}"
+  sonar_ip_address: "{{hostvars['localhost']['sonar_ip_address']}}"
+  remote_ip_address: "{{hostvars['localhost']['remote_ip_address']}}"

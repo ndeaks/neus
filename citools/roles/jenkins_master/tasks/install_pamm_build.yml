@@ -1,0 +1,61 @@
+---
+  - name: Install Karma
+    command: "su -c \"npm install karma --save-dev\" - jenkins"
+
+  - name: Install Karma plugins
+    command: "su -c \"npm install karma-jasmine karma-chrome-launcher --save-dev\" - jenkins"
+
+  - name: Create karma.cmd symbolic link
+    command: "su -c \"cd node_modules/.bin && ln -s ../karma/bin/karma karma.cmd\" - jenkins"
+
+  - name: Copying PAMM seed zip file to the host
+    copy:
+      src=pamm_seed.zip
+      dest=/tmp
+
+  - name: Unzipping PAMM seed zip file
+    unarchive:
+      src=/tmp/pamm_seed.zip
+      dest="{{jenkins_home}}"
+      owner="{{jenkins_user}}"
+      group="{{jenkins_group}}"
+      copy=no
+
+  - name: Removing PAMM seed zip file from the host
+    file: path=/tmp/pamm_seed.zip state=absent
+
+  - name: Clone PAMM seed repository (latest tag)
+    git:
+      repo=http://github.com/gatblau/pamm.seed
+      dest="{{jenkins_user_home}}/pamm.seed"
+      update=yes
+
+  - name: Install bzip2
+    yum:
+      name=bzip2
+      state=installed
+
+  - name: Install dependencies
+    shell: "cd {{jenkins_user_home}}/pamm.seed && npm install"
+
+  - name: Update webdriver
+    shell: "cd {{jenkins_user_home}}/pamm.seed && npm run webdriver-update"
+
+  - name: Configure PAMM seed Clean Build job
+    template:
+      src=pamm_seed/pamm_seed_clean_config.xml.j2
+      dest="{{jenkins_home}}/jobs/pamm-seed-clean/config.xml"
+      owner="{{jenkins_user}}"
+      group="{{jenkins_group}}"
+
+  - name: Remove PAMM seed repository
+    file:
+      path="{{jenkins_user_home}}/pamm.seed"
+      state=absent
+
+  - name: Copy Jenkins configuration file
+    template:
+      src=pamm_seed/jenkins_config.xml.j2
+      dest="{{jenkins_home}}/config.xml"
+      owner="{{jenkins_user}}"
+      group="{{jenkins_group}}"

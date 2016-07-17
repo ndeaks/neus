@@ -1,0 +1,25 @@
+---
+  # Install MariaDB
+  - name: Check MariaDB installed
+    stat: path=/etc/yum.repos.d/{{ mariadb_repo }}
+    register: mariadb_exists
+
+  - name: Install MariaDB
+    include: install_mariadb.yml
+    when: mariadb_exists.stat.exists == false
+
+  - name: Initialise GOGS database
+    include: initialise_gogs_database.yml
+    when: inventory_hostname != "ci-dit"
+
+  - name: Initialise Sonar database
+    include: initialise_sonar_database.yml
+    when: inventory_hostname != "ci-dit"
+
+  - name: Change MariaDB home folder permissions
+    file:
+      name="/var/lib/mysql"
+      recurse="yes"
+      mode="0777"
+    when: blueprint == "silicon"
+

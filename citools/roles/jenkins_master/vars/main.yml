@@ -1,0 +1,123 @@
+---
+# This play contains variables for the jenkins role
+
+  # Jenkins RPM
+  jenkins_rpm: jenkins-2.4-1.1.noarch.rpm
+
+  # Jenkins folders
+  jenkins_user_home: /home/jenkins
+  jenkins_home: "{{jenkins_user_home}}/.jenkins"
+
+  # Jenkins username and password
+  jenkins_user: jenkins
+  jenkins_password: $6$rounds=656000$vEwfQFfx8of8GbEK$.Ib42z9muqnJxiuQL/fw7JomQ5VXAPNBIWCQsQIm1nBIa/Jy17dXT3mxzwiI.BJ4mVdzJ2COlhlXmgn0EIaEz1
+  jenkins_group: jenkins
+
+  # Remote host settings for "publish over ssh" plugin
+  remote_host_name: Development Integration Test
+
+  # Jenkins Plugins
+  jenkins_plugins:
+    [
+      'ace-editor.hpi',
+      'ansible.hpi',
+      'ant.hpi',
+      'antisamy-markup-formatter.hpi',
+      'artifact-promotion.hpi',
+      'authentication-tokens.hpi',
+      'branch-api.hpi',
+      'clone-workspace-scm.hpi',
+      'cloudbees-folder.hpi',
+      'config-file-provider.hpi',
+      'credentials.hpi',
+      'delivery-pipeline-plugin.hpi',
+      'docker-build-step.hpi',
+      'docker-commons.hpi',
+      'docker-plugin.hpi',
+      'durable-task.hpi',
+      'email-ext.hpi',
+      'envinject.hpi',
+      'external-monitor-job.hpi',
+      'git.hpi',
+      'git-client.hpi',
+      'github.hpi',
+      'github-api.hpi',
+      'github-branch-source.hpi',
+      'github-organization-folder.hpi',
+      'git-server.hpi',
+      'gradle.hpi',
+      'handlebars.hpi',
+      'icon-shim.hpi',
+      'javadoc.hpi',
+      'jquery.hpi',
+      'jquery-detached.hpi',
+      'junit.hpi',
+      'kubernetes.hpi',
+      'ldap.hpi',
+      'mailer.hpi',
+      'matrix-auth.hpi',
+      'matrix-project.hpi',
+      'momentjs.hpi',
+      'openshift-deployer.hpi',
+      'openshift-pipeline.hpi',
+      'pam-auth.hpi',
+      'parameterized-trigger.hpi',
+      'pipeline-build-step.hpi',
+      'pipeline-input-step.hpi',
+      'pipeline-rest-api.hpi',
+      'pipeline-stage-step.hpi',
+      'pipeline-stage-view.hpi',
+      'plain-credentials.hpi',
+      'publish-over-ssh.hpi',
+      'sbt.hpi',
+      'scm-api.hpi',
+      'script-security.hpi',
+      'sonar.hpi',
+      'ssh-credentials.hpi',
+      'ssh-slaves.hpi',
+      'structs.hpi',
+      'swarm.hpi',
+      'teamconcert.hpi',
+      'token-macro.hpi',
+      'versionnumber.hpi',
+      'windows-slaves.hpi',
+      'workflow-aggregator.hpi',
+      'workflow-api.hpi',
+      'workflow-basic-steps.hpi',
+      'workflow-cps.hpi',
+      'workflow-cps-global-lib.hpi',
+      'workflow-durable-task-step.hpi',
+      'workflow-job.hpi',
+      'workflow-multibranch.hpi',
+      'workflow-scm-step.hpi',
+      'workflow-step-api.hpi',
+      'workflow-support.hpi',
+      'workflow-api.hpi',
+      'ws-cleanup.hpi'
+    ]
+
+### Build tools variables
+  git_perl_rpm: perl-Git-2.4.1-1.WANdisco.259.noarch.rpm
+  git_scm_rpm: git-2.4.1-1.WANdisco.259.x86_64.rpm
+  git_wandisco_rpm: wandisco-git-release-7-1.noarch.rpm
+
+  gradle_folder: gradle-2.7
+  gradle_zip: gradle-2.7-bin.zip
+
+  groovy_folder: groovy-2.4.4
+  groovy_zip: apache-groovy-binary-2.4.4.zip
+
+  maven_folder: apache-maven-3.3.9
+  maven_zip: apache-maven-3.3.9-bin.zip
+
+  nodejs_rpm: nodejs-0.10.42-4.el7.x86_64.rpm
+  # npm_rpm:    set in group_vars/all/main.yml
+
+  perl_rpm: perl-5.16.3-286.el7.x86_64.rpm
+
+  # sbt_folder: set in group_vars/all/main.yml
+  # sbt_zip:    set in group_vars/all/main.yml
+
+  sonar_runner_folder: sonar-runner-2.4
+  sonar_runner_zipfile: sonar-runner-dist-2.4.zip
+
